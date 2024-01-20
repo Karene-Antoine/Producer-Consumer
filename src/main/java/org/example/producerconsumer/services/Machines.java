@@ -40,7 +40,7 @@ public class Machines {
                 for(int j=0; j<graph.size(); j++) {
                     if(graph.get(i).get(j).equals("M")){
 //                        queues.get(j).getNext().get(j).setNext();
-                        queues.get(k).getNext().get(i).setNext(queues.get(j));
+//                        queues.get(k).getNext().get(i).setNext(queues.get(j));
 
                     }
 
