@@ -40,4 +40,12 @@ public class Mnode {
     public void setNext(Qnode next) {
         this.next = next;
     }
+    @Override
+    public String toString() {
+        return "Mnode{" +
+                "id=" + id +
+                ", color='" + color + '\'' +
+                ", next=" + next +
+                '}';
+    }
 }

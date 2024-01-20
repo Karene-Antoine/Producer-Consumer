@@ -12,4 +12,5 @@ public class MachineNode {
         this.id = id;
         this.next = next;
     }
+
 }

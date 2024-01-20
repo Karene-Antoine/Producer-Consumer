@@ -7,7 +7,7 @@ public class Qnode {
     private Queue<String> queue;  //queue pf products
     private ArrayList<Mnode> next ;
     private Observer observer;
-    public Qnode(int id ){
+    public Qnode(int id){
         this.id = id;
     }
     public Queue<String> getQueue() {
@@ -20,13 +20,32 @@ public class Qnode {
         return next;
     }
     public void setNext(ArrayList<Mnode> next) {
-        this.next = next;
+        this.next = new ArrayList<>(next);
     }
     public int getId() {
         return id;
     }
-
     public void setId(int id) {
         this.id = id;
+    }
+    public void initObserver() {
+        if(next == null){
+            return;
+        }
+        try{
+            for(Mnode mnode: next){
+                this.observer = new Observer(mnode.getSub());
+            }
+        }
+        catch (Exception e){
+            System.out.println("Error in initObserver");
+        }
+    }
+    @Override
+    public String toString() {
+        return "Qnode{" +
+                "id=" + id +
+                ", next=" + next +
+                '}';
     }
 }
