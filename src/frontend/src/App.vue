@@ -1,30 +1,131 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view/>
+  <div id="app">
+    <h1>Mesh simple flowchart</h1>
+    <div class="tool-wrapper">
+      <select v-model="newNodeType">
+        <option v-for="(item, index) in nodeCategory" :key="index" :value="index">{{item}}</option>
+      </select>
+      <input type="text" v-model="newNodeLabel" placeholder="Input node label">
+      <button @click="addNode">ADD</button>
+    </div>
+    
+    <simple-flowchart :scene.sync="scene" 
+      @nodeClick="nodeClick"
+      @nodeDelete="nodeDelete"
+      @linkBreak="linkBreak"
+      @linkAdded="linkAdded"
+      @canvasClick="canvasClick"
+      :height="800"/>
+  </div>
 </template>
 
-<style>
+<script>
+import SimpleFlowchart from './components/SimpleFlowchart.vue'
+
+export default {
+  name: 'app',
+  components: {
+    SimpleFlowchart
+  },
+  data() {
+    return {
+      scene: {
+        centerX: 1024,
+        centerY: 140,
+        scale: 1,
+        nodes: [
+          {
+            id: 1,
+            x: -700,
+            y: -69,
+            type: 'Q',
+            label: 'input',
+            count:5,
+          },
+          {
+            id: 2,
+            x: -357,
+            y: 80,
+            type: 'M',
+            label: '',
+            // color:'red'
+          },
+          {
+            id: 3,
+            x: -557,
+            y: 80,
+            type: 'Q',
+            label: 'output',
+            color:'rgb(255, 136, 85)',
+            count:0,
+          }
+        ],
+        links: [
+          {
+            id: 3,
+            from: 1, // node id the link start
+            to: 2,  // node id the link end
+          },
+          {
+            id: 4,
+            from: 2, // node id the link start
+            to: 3,  // node id the link end
+          }
+        ]
+      },
+      newNodeType: 0,
+      newNodeLabel: '',
+      nodeCategory:[
+        'M',
+        'Q'
+      ],
+    }
+  },
+  methods: {
+    canvasClick(e) {
+      // console.log('canvas Click, event:', e)
+    },
+    addNode() {
+      let maxID = Math.max(0, ...this.scene.nodes.map((link) => {
+        return link.id
+      }))
+      this.scene.nodes.push({
+        id: maxID + 1,
+        x: -400,
+        y: 50,
+        type: this.nodeCategory[this.newNodeType],
+        label: this.newNodeLabel ? this.newNodeLabel: `Node${maxID + 1}`,
+      })
+      console.log(this.scene.nodes)
+    },
+    nodeClick(id) {
+      // console.log('node click', id);
+    },
+    nodeDelete(id) {
+      // console.log('node delete', id);
+    },
+    linkBreak(id) {
+      // console.log('link break', id);
+    },
+    linkAdded(link) {
+      // console.log('new link added:', link);
+    }
+  }
+}
+</script>
+
+<style lang="scss">
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-}
-
-nav {
-  padding: 30px;
-}
-
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-nav a.router-link-exact-active {
-  color: #42b983;
+  margin: 0;
+  overflow: hidden;
+  height: 800px;
+  .tool-wrapper {
+    position: relative;
+  }
 }
 </style>
