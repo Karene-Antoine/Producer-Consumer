@@ -19,6 +19,9 @@ public class Subject implements ISubject{ //machine
             observer.update(isFinished);
         }
     }
+    public boolean isFinished() {
+        return isFinished;
+    }
     public void setF(boolean f){
         this.isFinished = f;
         notifyObserver();

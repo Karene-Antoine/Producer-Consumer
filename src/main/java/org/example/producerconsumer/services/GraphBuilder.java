@@ -1,12 +1,13 @@
 package org.example.producerconsumer.services;
 import org.example.producerconsumer.entities.Mnode;
 import org.example.producerconsumer.entities.Qnode;
-
 import java.util.ArrayList;
 public class GraphBuilder {
     ArrayList<Qnode> queues = new ArrayList<>();
     ArrayList<Mnode> machines = new ArrayList<>();
     public void createMandQ (ArrayList<ArrayList<String>> graph){
+        queues.clear();
+        machines.clear();
         for(int i=0; i<graph.size(); i++){
             if(graph.get(i).contains("Q")){
                 Qnode newQ = new Qnode(i);
@@ -31,7 +32,7 @@ public class GraphBuilder {
                         int finalJ = j;
                         machines.forEach(
                                 mnode -> {
-                                    if(mnode.getId()== finalJ){
+                                    if(mnode.getMid()== finalJ){
                                         linkedMachines.add(mnode);
                                     }
                                 }
@@ -42,7 +43,7 @@ public class GraphBuilder {
                 int finalI = i;
                 queues.forEach(
                         qnode -> {
-                            if(qnode.getId()== finalI){
+                            if(qnode.getQId()== finalI){
                                 qnode.setNext(linkedMachines);
                             }
                         }
@@ -57,10 +58,10 @@ public class GraphBuilder {
                         int finalI = i;
                         machines.forEach(
                                 mnode -> {
-                                    if(mnode.getId() == finalI){
+                                    if(mnode.getMid() == finalI){
                                         queues.forEach(
                                                 qnode -> {
-                                                    if(qnode.getId()== finalJ){
+                                                    if(qnode.getQId()== finalJ){
                                                         mnode.setNext(qnode);
                                                     }
                                                 }

@@ -2,13 +2,15 @@ package org.example.producerconsumer.entities;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
-public class Qnode {
-    private int id;
+public class Qnode extends Thread{
+    private int Qid;
     private Queue<String> queue;  //queue pf products
     private ArrayList<Mnode> next ;
     private Observer observer;
-    public Qnode(int id){
-        this.id = id;
+    private final Object lock = new Object();
+    public Qnode(int Qid){
+        this.Qid = Qid;
+        queue = new LinkedList<>();
     }
     public Queue<String> getQueue() {
         return queue;
@@ -22,12 +24,21 @@ public class Qnode {
     public void setNext(ArrayList<Mnode> next) {
         this.next = new ArrayList<>(next);
     }
-    public int getId() {
-        return id;
+    public int getQId() {
+        return Qid;
     }
-    public void setId(int id) {
-        this.id = id;
+    public void setQId(int id) {
+        this.Qid = id;
     }
+
+    public Observer getObserver() {
+        return observer;
+    }
+
+    public void setObserver(Observer observer) {
+        this.observer = observer;
+    }
+
     public void initObserver() {
         if(next == null){
             return;
@@ -42,10 +53,29 @@ public class Qnode {
         }
     }
     @Override
+    public void run() {
+        while(true){
+            if(observer!=null && observer.isFinished()){
+                if(!queue.isEmpty()){
+                    for(Mnode mnode: next){
+                        if(mnode.getSub().isFinished()){
+                            System.out.print(this);
+                            System.out.println("Queue is: "+queue);
+                            mnode.setColor(queue.poll());
+                            mnode.getSub().setF(false);
+                        }
+                    }
+                    observer.update(false);
+                }
+            }
+        }
+    }
+   
+    @Override
     public String toString() {
         return "Qnode{" +
-                "id=" + id +
-                ", next=" + next +
+                "id=" + (Qid+500) +
                 '}';
     }
 }
+

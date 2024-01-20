@@ -1,14 +1,15 @@
 package org.example.producerconsumer.controllers;
 import org.example.producerconsumer.services.GraphBuilder;
+import org.example.producerconsumer.services.Simulator;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.util.ArrayList;
+import java.util.Queue;
 
 @RestController
-
 public class Controller {
     GraphBuilder buildGraph = new GraphBuilder();
+    Simulator simulator = new Simulator();
     @PostMapping("/graph")
     public String createGraph(/*@RequestBody ArrayList<ArrayList<String>> graph*/){
         ArrayList<ArrayList<String>> graph = new ArrayList<>();
@@ -64,5 +65,11 @@ public class Controller {
         buildGraph.linkGraph(graph);
         buildGraph.createObservers();
         return "Graph created";
+    }
+    @GetMapping("/simulate")
+    public String simulate(@RequestParam("productCount") int productCount) {
+        simulator.createProductQueue(productCount,buildGraph);
+        simulator.simulate(buildGraph);// queue gwaha el products {red, green, blue, red} w tt7t fi awel queue
+        return "Congrats";
     }
 }
