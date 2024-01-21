@@ -1,15 +1,65 @@
 <template>
   <div id="app">
-    <h1>Mesh simple flowchart</h1>
+    <h1>Producer/Consumer Simulation</h1>
+    <h2>Rabena yostor</h2>
     <div class="tool-wrapper">
-      <select v-model="newNodeType">
+      <span class="node-add">
+        <div class="node-add queue" @click="this.newNodeType = 1; this.queuesNumber +=1; addNode()">
+          <div class="button-icon">
+          <lord-icon
+              src="https://cdn.lordicon.com/vasuakrs.json" 
+              trigger="hover"
+              stroke="bold"
+              colors="primary:#ffffff,secondary:#e8e230"
+              style="width:40px;height:40px">
+          </lord-icon>
+        </div>
+        <div>
+            Add Queue
+        </div>
+        </div>
+      </span>
+      <span class="node-add">
+        <div class="node-add machine" @click="this.newNodeType = 0; this.machinesNumber +=1; addNode()">
+          <div class="button-icon">
+          <lord-icon
+              src="https://cdn.lordicon.com/jeycryzx.json"     
+              trigger="hover"
+              stroke="bold"
+              colors="primary:#ffffff,secondary:#08a88a"
+              style="width:40px;height:40px">
+          </lord-icon>
+        </div>
+        <div>
+            Add Machine
+        </div>
+        </div>
+      </span>
+      <!-- <select v-model="newNodeType">
         <option v-for="(item, index) in nodeCategory" :key="index" :value="index">{{item}}</option>
-      </select>
+      </select> -->
       <input type="text" v-model="newNodeLabel" placeholder="Input node label">
-      <button @click="addNode">ADD</button>
+      <!-- <button @click="addNode">ADD</button> -->
+      <span class="node-add" @click="startSim">
+        <div class="node-add queue">
+          <div class="button-icon">
+          <lord-icon
+              src="https://cdn.lordicon.com/aklfruoc.json"
+              trigger="hover"
+              stroke="bold"
+              colors="primary:#ffffff,secondary:#e8e230"
+              style="width:40px;height:40px">
+          </lord-icon>
+        </div>
+        <div>
+            Start Sim
+        </div>
+        </div>
+      </span>
     </div>
     
-    <simple-flowchart :scene.sync="scene" 
+    <simple-flowchart :scene.sync="scene"
+      ref="flowChart" 
       @nodeClick="nodeClick"
       @nodeDelete="nodeDelete"
       @linkBreak="linkBreak"
@@ -20,12 +70,20 @@
 </template>
 
 <script>
+import { ref, onMounted } from 'vue'
 import SimpleFlowchart from './components/SimpleFlowchart.vue'
+
 
 export default {
   name: 'app',
   components: {
     SimpleFlowchart
+  },
+  setup() {
+    const flowChart = ref(null);
+    return {
+      flowChart
+    }
   },
   data() {
     return {
@@ -34,43 +92,8 @@ export default {
         centerY: 140,
         scale: 1,
         nodes: [
-          {
-            id: 1,
-            x: -700,
-            y: -69,
-            type: 'Q',
-            label: 'input',
-            count:5,
-          },
-          {
-            id: 2,
-            x: -357,
-            y: 80,
-            type: 'M',
-            label: '',
-            // color:'red'
-          },
-          {
-            id: 3,
-            x: -557,
-            y: 80,
-            type: 'Q',
-            label: 'output',
-            color:'rgb(255, 136, 85)',
-            count:0,
-          }
         ],
         links: [
-          {
-            id: 3,
-            from: 1, // node id the link start
-            to: 2,  // node id the link end
-          },
-          {
-            id: 4,
-            from: 2, // node id the link start
-            to: 3,  // node id the link end
-          }
         ]
       },
       newNodeType: 0,
@@ -79,6 +102,9 @@ export default {
         'M',
         'Q'
       ],
+      queuesNumber: 0,
+      machinesNumber: 0,
+      // graphMatrix: []
     }
   },
   methods: {
@@ -95,7 +121,9 @@ export default {
         y: 50,
         type: this.nodeCategory[this.newNodeType],
         label: this.newNodeLabel ? this.newNodeLabel: `Node${maxID + 1}`,
+        num: this.newNodeType==0 ? this.machinesNumber: this.queuesNumber,
       })
+      this.newNodeLabel = ''
       console.log(this.scene.nodes)
     },
     nodeClick(id) {
@@ -109,23 +137,72 @@ export default {
     },
     linkAdded(link) {
       // console.log('new link added:', link);
+    },
+    startSim(){
+      this.flowChart.initializeMatrix()
+      let mat = this.flowChart.updateMatrix();
+      console.log(mat);
     }
   }
 }
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+  // background-color: #00A48A;
+  // backdrop-filter: blur(10px);
   margin: 0;
   overflow: hidden;
   height: 800px;
+  background-color: #DFF8D5;
   .tool-wrapper {
     position: relative;
+    display: flex;
+    justify-content: center;
+    background: rgba(0, 164, 138, 0.66);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(7.6px);
+    -webkit-backdrop-filter: blur(7.6px);
   }
 }
+.node-add{
+      margin: auto;
+      /* width: 100%; */
+      display: flex;
+      flex-direction: column;
+      align-content: center;
+      color: #fff;;
+      border-radius:10px;
+      padding: 5px;
+      text-align:center;
+      transition: 1s;
+      background: rgba(0, 164, 138, 0.66);
+border-radius: 16px;
+box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+backdrop-filter: blur(7.6px);
+-webkit-backdrop-filter: blur(7.6px);
+    }
+
+.node-add .queue:hover{
+  cursor: pointer;
+  background-color: #07d800;
+  transition: 1s;
+}
+// .node-add .machine{
+//   background-color: #07d800;
+// }
+.node-add .machine:hover{
+  cursor: pointer;
+  background-color: rgb(208, 255, 0); //#07d800;
+  transition: 1s;
+}
+.button-icon{
+  margin: auto;
+}
+
 </style>

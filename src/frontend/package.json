@@ -7,7 +7,10 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "@lordicon/element": "^1.4.2",
     "core-js": "^3.8.3",
+    "lord-icon-element": "^4.1.2",
+    "lottie-web": "^5.12.2",
     "sass-loader": "^14.0.0",
     "vue": "^3.2.13",
     "vue-router": "^4.0.3",

@@ -9,7 +9,7 @@
        @mouseup="inputMouseUp">
     </div>
     <div class="node-main">
-      <div v-text="type" class="node-type"></div>
+      <div v-text="type + num" class="node-type"></div>
       <div v-text="label" class="node-label"></div>
       <div v-if="(count || count == 0) && type === 'Q'" v-text="'count: '+ count.toString()" class="node-label"></div>
     </div>
@@ -69,6 +69,9 @@ export default {
           centerY: 140,
         }
       }
+    },
+    num: {
+      type: Number,
     }
   },
   data() {
@@ -132,6 +135,7 @@ $portSize: 12;
   height: 80px;
   position: absolute;
   box-sizing: border-box;
+  box-shadow: 0 0 0 2px $themeColorQ;
   border: none;
   background: white;
   z-index: 1;
@@ -143,8 +147,8 @@ $portSize: 12;
     .node-type {
       background: $themeColorQ;
       color: white;
-      font-size: 13px;
-      padding: 6px;
+      font-size: 16px;
+      padding: 5px;
     }
     .node-label {
       font-size: 13px;
@@ -165,10 +169,12 @@ $portSize: 12;
     }
   }
   .node-input {
-    top: #{-2+$portSize/-2}px;
+    top: 40px;
+    left: 0px;
   }
   .node-output {
-    bottom: #{-2+$portSize/-2}px;
+    bottom: 25px;
+    left: 80px;
   }
   .node-delete {
     position: absolute;
@@ -196,12 +202,14 @@ $portSize: 12;
   height: 80px;
   position: absolute;
   box-sizing: border-box;
+  box-shadow: 0 0 0 2px $themeColorM;
   border: none;
   background: white;
   z-index: 1;
   opacity: .9;
   cursor: move;
   transform-origin: top left;
+  border-radius:35px;
   .node-main {
     text-align: center;
     .node-type {
@@ -209,6 +217,10 @@ $portSize: 12;
       color: white;
       font-size: 13px;
       padding: 6px;
+      border-top-left-radius: 35px;
+      border-top-right-radius: 35px;
+      font-size: 16px;
+      padding: 5px;
     }
     .node-label {
       font-size: 13px;
@@ -229,10 +241,12 @@ $portSize: 12;
     }
   }
   .node-input {
-    top: #{-2+$portSize/-2}px;
+    top: 40px;
+    left: 0px;
   }
   .node-output {
-    bottom: #{-2+$portSize/-2}px;
+    bottom: 25px;
+    left: 80px;
   }
   .node-delete {
     position: absolute;
@@ -254,6 +268,6 @@ $portSize: 12;
   }
 }
 .selected {
-  box-shadow: 0 0 0 2px $themeColorQ;
+  box-shadow: 0 0 0 2px rgb(255, 136, 85);
 }
 </style>

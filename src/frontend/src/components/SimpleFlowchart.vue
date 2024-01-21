@@ -66,7 +66,8 @@ export default {
         top: 0,
         left: 0
       },
-      graphMatrix: []
+      graphMatrix: [],
+      sceneHistory: [],
     };
   },
   components: {
@@ -131,10 +132,10 @@ export default {
     },
     getPortPosition(type, x, y) {
       if (type === 'top') {
-        return [x + 40, y];
+        return [x, y+40];
       }
       else if (type === 'bottom') {
-        return [x + 40, y + 80];
+        return [x + 80, y + 40];
       }
     },
     linkingStart(index) {
@@ -278,7 +279,7 @@ export default {
       });  // for(l of this.scene.links){
       // this.graphMatrix = [Array.from(this.scene.nodes).length][Array.from(this.scene.links).length]
       console.log(this.scene.nodes);
-      console.log(this.graphMatrix);
+      return this.graphMatrix;
     }
   },
 }
@@ -288,7 +289,11 @@ export default {
 <style scoped lang="scss">
 .flowchart-container {
   margin: 0;
-  background: #ddd;
+  background-image: url("../assets/3274387.jpg");
+  background-position: center; 
+  background-repeat: no-repeat; 
+  background-size: cover;
+  background-blend-mode:soft-light;
   position: relative;
   overflow: hidden;
   svg {
