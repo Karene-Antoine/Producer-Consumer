@@ -4,6 +4,7 @@ import org.example.producerconsumer.services.Simulator;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Queue;
 
 @RestController
@@ -71,5 +72,13 @@ public class Controller {
         simulator.createProductQueue(productCount,buildGraph);
         simulator.simulate(buildGraph);// queue gwaha el products {red, green, blue, red} w tt7t fi awel queue
         return "Congrats";
+    }
+    @GetMapping("/getQueues")
+    public HashMap<Integer,Queue<String>> getQueue(){
+        return simulator.getQueues(buildGraph);
+    }
+    @GetMapping("/getMachines")
+    public HashMap<Integer,String> getMachine(){
+        return simulator.getMachines(buildGraph);
     }
 }

@@ -7,6 +7,7 @@ public class Qnode extends Thread{
     private Queue<String> queue;  //queue pf products
     private ArrayList<Mnode> next ;
     private Observer observer;
+    private volatile boolean keepRunning = true;
     private final Object lock = new Object();
     public Qnode(int Qid){
         this.Qid = Qid;
@@ -54,23 +55,25 @@ public class Qnode extends Thread{
     }
     @Override
     public void run() {
-        while(true){
+        while(keepRunning){
             if(observer!=null && observer.isFinished()){
-                if(!queue.isEmpty()){
-                    for(Mnode mnode: next){
+                for(Mnode mnode: next){
+                    if(!queue.isEmpty()){
                         if(mnode.getSub().isFinished()){
                             System.out.print(this);
-                            System.out.println("Queue is: "+queue);
+                            System.out.print(queue);
+                            System.out.println();
                             mnode.setColor(queue.poll());
                             mnode.getSub().setF(false);
                         }
                     }
-                    observer.update(false);
                 }
             }
         }
     }
-   
+    public void stopThread() {
+        keepRunning = false;
+    }
     @Override
     public String toString() {
         return "Qnode{" +

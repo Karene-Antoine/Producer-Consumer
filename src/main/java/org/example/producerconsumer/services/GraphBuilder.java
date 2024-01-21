@@ -37,7 +37,6 @@ public class GraphBuilder {
                                     }
                                 }
                         );
-//                       linkedMachines.add(machines.get(j));
                     }
                 }
                 int finalI = i;
@@ -48,12 +47,10 @@ public class GraphBuilder {
                             }
                         }
                 );
-//                queues.get(i).setNext(linkedMachines);
             }
             if(graph.get(i).contains("M")){
                 for(int j=0; j< graph.size(); j++){
                     if(graph.get(i).get(j).equals("M")){
-//                        machines.get(i).setNext(queues.get(j));
                         int finalJ = j;
                         int finalI = i;
                         machines.forEach(

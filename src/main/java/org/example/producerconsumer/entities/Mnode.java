@@ -4,6 +4,7 @@ public class Mnode  extends Thread{
     private String color; //product color
     private Qnode next;
     private Subject sub;
+    private volatile boolean keepRunning = true;
     public int getMid() {
         return Mid;
     }
@@ -34,7 +35,7 @@ public class Mnode  extends Thread{
     }
     @Override
     public void run() {
-        while(true){
+        while(keepRunning){
             if(this.color == null){
                 continue;
             }
@@ -47,11 +48,14 @@ public class Mnode  extends Thread{
                     throw new RuntimeException(e);
                 }
                 this.next.getQueue().add(this.color);
+                this.color = null;
                 sub.setF(true);
                 System.out.println(this);
-
             }
         }
+    }
+    public void stopThread() {
+        keepRunning = false;
     }
     @Override
     public String toString() {
