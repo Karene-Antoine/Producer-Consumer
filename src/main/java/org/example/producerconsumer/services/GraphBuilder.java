@@ -1,13 +1,19 @@
 package org.example.producerconsumer.services;
 import org.example.producerconsumer.entities.Mnode;
 import org.example.producerconsumer.entities.Qnode;
+import org.example.producerconsumer.entities.Snapshot;
+
 import java.util.ArrayList;
+import java.util.LinkedList;
+
 public class GraphBuilder {
     ArrayList<Qnode> queues = new ArrayList<>();
     ArrayList<Mnode> machines = new ArrayList<>();
+    ArrayList<ArrayList<String>> graph;
     public void createMandQ (ArrayList<ArrayList<String>> graph){
         queues.clear();
         machines.clear();
+        this.graph = graph;
         for(int i=0; i<graph.size(); i++){
             if(graph.get(i).contains("Q")){
                 Qnode newQ = new Qnode(i);
@@ -80,9 +86,47 @@ public class GraphBuilder {
                 }
         );
     }
+    public Snapshot storeInSnapshot() {
+        GraphBuilder graphBuilder = this.deepCopy();
+        return new Snapshot(graphBuilder);
+    }
+    public GraphBuilder restoreFromSnapshot(Snapshot snapshot) {
+        return snapshot.getSavedGraphBuilder();
+    }
+    public GraphBuilder deepCopy(){
+        GraphBuilder graphBuilder = new GraphBuilder();
+        graphBuilder.graph = this.graph;
+        /*graphBuilder.queues = new ArrayList<>();
+        graphBuilder.machines = new ArrayList<>();*/
+        this.queues.forEach(
+                qnode -> {
+                    Qnode qnode1 = new Qnode(qnode.getQId());
+                    qnode1.setQueue(new LinkedList<>(qnode.getQueue()));
+                    qnode1.setObserver(qnode.getObserver());
+                    graphBuilder.queues.add(qnode1);
+                }
+        );
+        this.machines.forEach(
+                mnode -> {
+                    Mnode mnode1 = new Mnode(mnode.getMid(), mnode.getWaitTime());
+                    mnode1.setColor(mnode.getColor());
+                    mnode1.setSub(mnode.getSub());
+                    graphBuilder.machines.add(mnode1);
+                }
+        );
+        graphBuilder.linkGraph(this.graph);
+        return graphBuilder;
+    }
+    @Override
+    public String toString() {
+        return "GraphBuilder{" +
+                "Product=" + queues.get(0).getQueue() +
+                "queues=" + queues +
+                ", machines=" + machines +
+                ", graph=" + graph +
+                '}';
+    }
 }
-
-
 // [
 //         [0,Q,0,0,0,0]
 //        ,[0,0,M,0,0,0]

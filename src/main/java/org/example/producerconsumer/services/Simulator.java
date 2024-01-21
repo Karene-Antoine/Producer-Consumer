@@ -1,14 +1,10 @@
 package org.example.producerconsumer.services;
-
 import org.example.producerconsumer.entities.Mnode;
 import org.example.producerconsumer.entities.Qnode;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 public class Simulator {
     int productCount;
     public void createProductQueue(int productCount, GraphBuilder graphBuilder){
@@ -48,13 +44,13 @@ public class Simulator {
         for(Mnode m: mnode){
             m.stopThread();
             System.out.print(m + " ");
-            System.out.print(m.isAlive());
+            System.out.print(m.isKeepRunning());
             System.out.println();
         }
         for(Qnode queue: qnode){
             queue.stopThread();
             System.out.print(queue + " ");
-            System.out.print(queue.isAlive());
+            System.out.print(queue.isKeepRunning());
             System.out.println();
         }
     }

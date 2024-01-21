@@ -1,4 +1,6 @@
 package org.example.producerconsumer.controllers;
+import org.example.producerconsumer.entities.Snapshot;
+import org.example.producerconsumer.services.Caretaker;
 import org.example.producerconsumer.services.GraphBuilder;
 import org.example.producerconsumer.services.Simulator;
 import org.springframework.web.bind.annotation.*;
@@ -9,11 +11,14 @@ import java.util.Queue;
 
 @RestController
 public class Controller {
-    GraphBuilder buildGraph = new GraphBuilder();
-    Simulator simulator = new Simulator();
+    GraphBuilder buildGraph;
+    Simulator simulator;
+    Snapshot snapshot;
     @PostMapping("/graph")
-    public String createGraph(@RequestBody ArrayList<ArrayList<String>> graph){
-        /*ArrayList<ArrayList<String>> graph = new ArrayList<>();
+    public String createGraph(/*@RequestBody ArrayList<ArrayList<String>> graph*/){
+        buildGraph = new GraphBuilder();
+        simulator = new Simulator();
+        ArrayList<ArrayList<String>> graph = new ArrayList<>();
         ArrayList<String> row1 = new ArrayList<>();
         row1.add("0");
         row1.add("Q");
@@ -61,7 +66,7 @@ public class Controller {
         row6.add("0");
         row6.add("0");
         row6.add("0");
-        graph.add(row6);*/
+        graph.add(row6);
         buildGraph.createMandQ(graph);
         buildGraph.linkGraph(graph);
         buildGraph.createObservers();
@@ -70,7 +75,8 @@ public class Controller {
     @GetMapping("/simulate")
     public String simulate(@RequestParam("productCount") int productCount) {
         simulator.createProductQueue(productCount,buildGraph);
-        simulator.simulate(buildGraph);// queue gwaha el products {red, green, blue, red} w tt7t fi awel queue
+        snapshot = buildGraph.storeInSnapshot();
+        simulator.simulate(buildGraph);
         return "Congrats";
     }
     @GetMapping("/getQueues")
@@ -80,5 +86,14 @@ public class Controller {
     @GetMapping("/getMachines")
     public HashMap<Integer,String> getMachine(){
         return simulator.getMachines(buildGraph);
+    }
+    @GetMapping("/restart")
+    public String restart(){
+        GraphBuilder buildGraph2 = buildGraph.restoreFromSnapshot(snapshot).deepCopy();
+        System.out.println(buildGraph2.toString());
+        System.out.println(buildGraph.restoreFromSnapshot(snapshot).toString());
+        buildGraph = buildGraph2;
+        simulator.simulate(buildGraph2);
+        return "Restarted";
     }
 }
