@@ -4,6 +4,7 @@ public class Mnode  extends Thread{
     private String color; //product color
     private Qnode next;
     private Subject sub;
+    private final int waitTime;
     private volatile boolean keepRunning = true;
     public int getMid() {
         return Mid;
@@ -27,6 +28,12 @@ public class Mnode  extends Thread{
         this.sub = sub;
     }
     public Mnode(int id){
+        this.waitTime = (int)(Math.random() * 5000 + 1000);
+        this.sub = new Subject();
+        this.Mid = id;
+    }
+    public Mnode(int id, int waitTime){
+        this.waitTime = waitTime;
         this.sub = new Subject();
         this.Mid = id;
     }
@@ -40,27 +47,33 @@ public class Mnode  extends Thread{
                 continue;
             }
             if(!this.sub.isFinished()){
-                int waitTime = (int)(Math.random() * 5000 + 1000);
                 try {
-                    Thread.sleep(waitTime);
+                    Thread.sleep(this.waitTime);
                 }
                 catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
                 this.next.getQueue().add(this.color);
+                System.out.println(this);
                 this.color = null;
                 sub.setF(true);
-                System.out.println(this);
             }
         }
     }
     public void stopThread() {
         keepRunning = false;
     }
+    public boolean isKeepRunning() {
+        return keepRunning;
+    }
+    public int getWaitTime() {
+        return waitTime;
+    }
     @Override
     public String toString() {
         return "Mnode{" +
-                "id=" + (Mid+800) +
+                "id=" + Mid +
+                "WaitTime=" + waitTime +
                 ", color='" + color + '\'' +
                 '}';
     }

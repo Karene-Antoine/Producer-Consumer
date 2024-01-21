@@ -60,9 +60,6 @@ public class Qnode extends Thread{
                 for(Mnode mnode: next){
                     if(!queue.isEmpty()){
                         if(mnode.getSub().isFinished()){
-                            System.out.print(this);
-                            System.out.print(queue);
-                            System.out.println();
                             mnode.setColor(queue.poll());
                             mnode.getSub().setF(false);
                         }
@@ -74,10 +71,13 @@ public class Qnode extends Thread{
     public void stopThread() {
         keepRunning = false;
     }
+    public boolean isKeepRunning() {
+        return keepRunning;
+    }
     @Override
     public String toString() {
         return "Qnode{" +
-                "id=" + (Qid+500) +
+                "id=" + Qid +
                 '}';
     }
 }
