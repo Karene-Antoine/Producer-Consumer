@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Queue;
+@CrossOrigin
 @RestController
 public class Controller {
     GraphBuilder buildGraph;
