@@ -269,7 +269,7 @@ export default {
     for (let i = 0; i < Array.from(this.scene.nodes).length; i++) {
         this.graphMatrix[i] = [];
         for (let j = 0; j < Array.from(this.scene.nodes).length; j++) {
-          this.graphMatrix[i][j] = null;
+          this.graphMatrix[i][j] = '0';
         }
     }
    },

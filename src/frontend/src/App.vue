@@ -104,7 +104,15 @@ export default {
       ],
       queuesNumber: 0,
       machinesNumber: 0,
+      queuesColors: [],
+      machinesColors: [],
+      stopSim: false,
       // graphMatrix: []
+    //   findNodeWithID: function(id){
+    //   return this.scene.nodes.find((item) => {
+    //       return id === item.id
+    //   })
+    // }
     }
   },
   methods: {
@@ -119,6 +127,7 @@ export default {
         id: maxID + 1,
         x: -400,
         y: 50,
+        // color: null,
         type: this.nodeCategory[this.newNodeType],
         label: this.newNodeLabel ? this.newNodeLabel: `Node${maxID + 1}`,
         num: this.newNodeType==0 ? this.machinesNumber: this.queuesNumber,
@@ -126,6 +135,7 @@ export default {
       this.newNodeLabel = ''
       console.log(this.scene.nodes)
     },
+
     nodeClick(id) {
       // console.log('node click', id);
     },
@@ -138,10 +148,117 @@ export default {
     linkAdded(link) {
       // console.log('new link added:', link);
     },
+    updateColors(){
+      console.log(this.stopSim);
+      fetch('http://localhost:8080/getQueues', {
+        method: "GET",
+        // headers: {
+        //   "Content-type": "application/json; charset=UTF-8",
+        // }
+      })
+        .then(res => res.json())
+        .then(data => {
+          console.log(data)
+          this.queuesColors = data
+          for(let ID in this.queuesColors){
+            this.scene.nodes.forEach(n=> {
+              let q
+              if (n.id-1 == ID){
+                if (this.queuesColors[ID] != null){
+                  q = Array.from(this.queuesColors[ID]).length
+                }else{
+                  q = 0;
+                }
+                n.count = q
+                console.log(n)
+              }
+            })
+          }
+        })
+      
+      fetch('http://localhost:8080/getMachines', {
+        method: "GET",
+      })
+        .then(res => res.json())
+        .then(data => {
+          // console.log(data)
+          this.machinesColors = data
+          console.log(this.machinesColors)
+          console.log(this.scene.nodes)
+          for(let ID in this.machinesColors){
+            this.scene.nodes.forEach(n=> {
+              let color
+              if (n.id-1 == ID){
+                if (this.machinesColors[ID] != null){
+                  color = Number(this.machinesColors[ID])
+                  if(color < 10){
+                    color += 10
+                  }
+                  console.log((color*0.01))
+                  color = (color*0.01)
+                  color = Math.floor(color*16777215).toString(16);
+                }else{
+                  color = '07d800';
+                }
+                n.color = '#' + color
+                console.log(n)
+              }
+                // console.log(Math.floor(color*16777215))
+            })
+            // console.log(node)
+            // node.color = '#' + Math.floor((id/100)*16777215).toString(16);
+          }
+        })
+
+      
+
+    },
     startSim(){
+      this.stopSim = false
       this.flowChart.initializeMatrix()
       let mat = this.flowChart.updateMatrix();
       console.log(mat);
+
+      // const url = 
+      // const method = 
+      // const body = JSON.stringify(mat)
+      // console.log(body)
+      fetch('http://localhost:8080/graph', {
+        method: "POST",
+        body: JSON.stringify(mat),
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        }
+      })
+        .then(res => res.text())
+        .then(data => console.log(data)) 
+        
+        this.runSim();
+        var autoReloadInterval = setInterval(()=>{
+          this.updateColors();
+          if(this.stopSim){
+          clearInterval(autoReloadInterval);
+          }
+        }, 250);
+      // }
+    
+    },
+    
+    async runSim(){
+      const url = "http://localhost:8080/simulate?"
+      const params = {
+        productCount: 5
+      }
+      const query = new URLSearchParams(params)
+      const method = "GET"
+      fetch(url + query, {
+        method: method,
+      })
+          .then(res => res.text())
+          .then((data) => {
+            this.stopSim = true
+            console.log(data)
+          })
     }
   }
 }

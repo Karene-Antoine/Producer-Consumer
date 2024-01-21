@@ -51,7 +51,7 @@ export default {
     },
     color: {
       type: String,
-      default: '#aaa5aa'
+      default: '#07d800'
     },
     count: {
       type: Number,
@@ -124,7 +124,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-$themeColorM: #07d800;    //v-bind(color); //'#' + Math.floor(Math.random()*16777215).toString(16); //: ;
+$themeColorM: v-bind(color); //'#' + Math.floor(Math.random()*16777215).toString(16); //: ;
 $themeColorQ: rgb(211, 211, 4);
 $portSize: 12;
 
