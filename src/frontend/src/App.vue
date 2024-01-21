@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <h1>Producer/Consumer Simulation</h1>
-    <h2>Rabena yostor</h2>
+    <h2>Unleash the gears!</h2>
     <div class="tool-wrapper">
       <span class="node-add">
         <div class="node-add queue" @click="this.newNodeType = 1; this.queuesNumber +=1; addNode()">
@@ -56,6 +56,23 @@
         </div>
         </div>
       </span>
+      <input type="text" v-model="prodNum" placeholder="Input number of products">
+      <span v-if="this.stopSim" class="node-add" @click="restartSim">
+        <div class="node-add queue">
+          <div class="button-icon">
+          <lord-icon
+            src="https://cdn.lordicon.com/rsbokaso.json"
+            trigger="hover"
+            stroke="bold"
+            colors="primary:#ffffff"
+            style="width:40px;height:40px">
+          </lord-icon>
+        </div>
+        <div>
+            Restart Sim
+        </div>
+        </div>
+      </span>
     </div>
     
     <simple-flowchart :scene.sync="scene"
@@ -107,6 +124,7 @@ export default {
       queuesColors: [],
       machinesColors: [],
       stopSim: false,
+      prodNum: '',
       // graphMatrix: []
     //   findNodeWithID: function(id){
     //   return this.scene.nodes.find((item) => {
@@ -139,7 +157,16 @@ export default {
     nodeClick(id) {
       // console.log('node click', id);
     },
-    nodeDelete(id) {
+    nodeDelete(ID) {
+      // this.scene.nodes.forEach(n=> {
+      //   if(n.id == ID){
+      //     if (n.type === 'Q'){
+      //       this.queuesNumber = this.queuesNumber - 1
+      //     }else{
+      //       this.machinesNumber = this.machinesNumber - 1
+      //     }
+      //   }
+      // })
       // console.log('node delete', id);
     },
     linkBreak(id) {
@@ -198,7 +225,7 @@ export default {
                   color = (color*0.01)
                   color = Math.floor(color*16777215).toString(16);
                 }else{
-                  color = '07d800';
+                  color = 'e0e0e0';
                 }
                 n.color = '#' + color
                 console.log(n)
@@ -219,10 +246,6 @@ export default {
       let mat = this.flowChart.updateMatrix();
       console.log(mat);
 
-      // const url = 
-      // const method = 
-      // const body = JSON.stringify(mat)
-      // console.log(body)
       fetch('http://localhost:8080/graph', {
         method: "POST",
         body: JSON.stringify(mat),
@@ -240,18 +263,37 @@ export default {
           clearInterval(autoReloadInterval);
           }
         }, 250);
-      // }
-    
     },
-    
+    restartSim(){
+      this.stopSim = false
+      this.reRunSim();
+      var autoReloadInterval = setInterval(()=>{
+          this.updateColors();
+          if(this.stopSim){
+          clearInterval(autoReloadInterval);
+          }
+      }, 250);
+    },    
     async runSim(){
       const url = "http://localhost:8080/simulate?"
       const params = {
-        productCount: 5
+        productCount: Number(this.prodNum)
       }
       const query = new URLSearchParams(params)
       const method = "GET"
       fetch(url + query, {
+        method: method,
+      })
+          .then(res => res.text())
+          .then((data) => {
+            this.stopSim = true
+            console.log(data)
+          })
+    },
+    async reRunSim(){
+      const url = "http://localhost:8080/restart"
+      const method = "GET"
+      fetch(url, {
         method: method,
       })
           .then(res => res.text())

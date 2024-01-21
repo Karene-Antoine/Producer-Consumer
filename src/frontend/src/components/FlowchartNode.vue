@@ -51,7 +51,7 @@ export default {
     },
     color: {
       type: String,
-      default: '#07d800'
+      default: '#e0e0e0'
     },
     count: {
       type: Number,
@@ -214,7 +214,7 @@ $portSize: 12;
     text-align: center;
     .node-type {
       background: $themeColorM;
-      color: white;
+      color: black;
       font-size: 13px;
       padding: 6px;
       border-top-left-radius: 35px;
