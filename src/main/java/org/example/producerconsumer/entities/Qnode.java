@@ -77,7 +77,7 @@ public class Qnode extends Thread{
     @Override
     public String toString() {
         return "Qnode{" +
-                "id=" + (Qid+500) +
+                "id=" + Qid +
                 '}';
     }
 }

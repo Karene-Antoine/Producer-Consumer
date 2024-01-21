@@ -72,7 +72,7 @@ public class Mnode  extends Thread{
     @Override
     public String toString() {
         return "Mnode{" +
-                "id=" + (Mid+800) +
+                "id=" + Mid +
                 "WaitTime=" + waitTime +
                 ", color='" + color + '\'' +
                 '}';
